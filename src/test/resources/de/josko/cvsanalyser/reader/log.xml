@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+    <logentry
+            revision="1674710">
+        <author>ggregory</author>
+        <date>2015-04-20T00:25:55.200305Z</date>
+        <paths>
+            <path
+                    action="M"
+                    prop-mods="false"
+                    text-mods="true"
+                    kind="file">
+                /commons/proper/io/trunk/src/main/java/org/apache/commons/io/output/UnixLineEndingInputStreamTest.java
+            </path>
+        </paths>
+        <msg>Javadoc 8 fix.</msg>
+    </logentry>
+    <logentry
+            revision="1673459">
+        <author>krosenvold</author>
+        <date>2015-04-14T16:10:27.613604Z</date>
+        <paths>
+            <path
+                    action="M"
+                    prop-mods="false"
+                    text-mods="true"
+                    kind="file">
+                /commons/proper/io/trunk/src/main/java/org/apache/commons/io/output/UnixLineEndingInputStreamTest.java
+            </path>
+            <path
+                    action="M"
+                    prop-mods="false"
+                    text-mods="true"
+                    kind="file">
+                /commons/proper/io/trunk/src/main/java/org/apache/commons/io/output/MacLineEndingInputStreamTest.java
+            </path>
+            <path
+                    prop-mods="false"
+                    text-mods="true"
+                    kind="folder"
+                    action="M">
+                /commons/proper/io/trunk/src/main/java/org/apache/commons/io/input
+            </path>
+        </paths>
+        <msg>MASSEMBLY-753 CR only handling. Unreleased code so no separate issue for commons
+
+            According to http://en.wikipedia.org/wiki/Newline#Representations we're
+            probably be talking about files originating on old v9 MacOS'es or a Commodore 64
+        </msg>
+    </logentry>
+</log>
