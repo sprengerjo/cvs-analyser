@@ -6,7 +6,11 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import de.josko.cvsanalyser.reader.LogReader;
 import de.josko.cvsanalyser.reader.SVNXmlLogReader;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class CvsLogAnalyser {
@@ -24,12 +28,12 @@ public class CvsLogAnalyser {
     private OrientGraph oGraph;
 
     public static void main(String[] args) {
-        new CvsLogAnalyser().run();
+        CvsLogAnalyser cvsLogAnalyser = new CvsLogAnalyser();
+        cvsLogAnalyser.run();
     }
 
     private void run() {
-        factory = new OrientGraphFactory("remote:" + DB_DIR, "root", "root");
-        oGraph = factory.getTx();
+        openConnection();
         oGraph.executeOutsideTx(iArgument -> {
             createVertexType(V_COMMITTER, "name");
             createVertexType(V_REVISION, "revision");
@@ -58,7 +62,10 @@ public class CvsLogAnalyser {
             reader.getCommits().forEach(commit -> {
                 LOG.info("Processing Revision " + commit.getRevision());
                 Vertex committer = getVertex(V_COMMITTER, "name", commit.getCommitter());
+
                 Vertex revision = getVertex(V_REVISION, "revision", commit.getRevision());
+                revision.setProperty("message", commit.getMessage());
+
                 Vertex date = getVertex(V_DATE, "date", commit.getDate().toString());
 
                 LOG.info(" -> Add Edge from " + commit.getCommitter() + " to " + commit.getRevision());
@@ -76,8 +83,17 @@ public class CvsLogAnalyser {
             return null;
         });
 
+        closeConnection();
+    }
+
+    private void closeConnection() {
         oGraph.shutdown();
         factory.close();
+    }
+
+    private void openConnection() {
+        factory = new OrientGraphFactory("remote:" + DB_DIR, "root", "root");
+        oGraph = factory.getTx();
     }
 
     private void addVertex(String className, String key, Object value) {

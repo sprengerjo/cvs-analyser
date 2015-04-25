@@ -10,6 +10,7 @@ public class Commit {
     private DateTime date;
     private Set<String> affectedFiles = new HashSet<>();
     private String revision;
+    private String message;
 
     public String getCommitter() {
         return committer;
@@ -41,5 +42,13 @@ public class Commit {
 
     public String getRevision() {
         return revision;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }
