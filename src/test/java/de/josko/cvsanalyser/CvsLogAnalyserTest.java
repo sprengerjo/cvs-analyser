@@ -1,20 +1,8 @@
 package de.josko.cvsanalyser;
 
-import static org.junit.Assert.*;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import java.util.logging.Logger;
 
 
 public class CvsLogAnalyserTest {
-
-
-
-	@Test
-	public void getLogFile() throws Exception {
-		String xml = IOUtils.toString(
-			      this.getClass().getResourceAsStream("svn.log"),
-			      "UTF-8"
-			    );
-	}
+    protected final static Logger LOG = Logger.getLogger(CvsLogAnalyserTest.class.getSimpleName());
 }

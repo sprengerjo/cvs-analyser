@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class SVNXmlLogReader {
+public class SVNXmlLogReader implements LogReader {
     protected final static Logger LOG = Logger.getLogger(SVNXmlLogReader.class.getSimpleName());
 
     private Document doc;
@@ -50,12 +50,14 @@ public class SVNXmlLogReader {
         }
     }
 
+    @Override
     public Set<String> getAuthors() {
         String xpath = "/log/logentry/author";
         return getStringValueSet(xpath);
     }
 
 
+    @Override
     public Set<DateTime> getDates() {
         String xpath = "/log/logentry/date";
         Set<String> dateStrings = getStringValueSet(xpath);
@@ -63,9 +65,17 @@ public class SVNXmlLogReader {
         return dates;
     }
 
+    @Override
     public Set<String> getAffectedFiles() {
         String xpath = "/log/logentry/paths/path[@kind='file']";
         return getStringValueSet(xpath);
+    }
+
+    @Override
+    public Set<String> getRevisions() {
+        String xpath = "/log/logentry/@revision";
+        Set<String> commit = getStringValueSet(xpath);
+        return commit;
     }
 
     private Set<String> getStringValueSet(String xpath) {
@@ -97,6 +107,7 @@ public class SVNXmlLogReader {
         return null;
     }
 
+    @Override
     public List<Commit> getCommits() {
         ArrayList<Commit> commits = new ArrayList<Commit>();
 

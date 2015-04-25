@@ -18,7 +18,7 @@ public class SVNXmlLogReaderTest {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
-    private SVNXmlLogReader reader;
+    private LogReader reader;
 
     @Before
     public void setUp() throws Exception {
@@ -35,6 +35,16 @@ public class SVNXmlLogReaderTest {
     public void getAffectedFilesReturnsFileEntriesOnly() throws Exception {
         Set<String> files = reader.getAffectedFiles();
         assertThat(files.size(), is(2));
+    }
+
+    @Test
+    public void getRevisions() throws Exception {
+        Set<String> files = reader.getRevisions();
+        assertThat(files.size(), is(2));
+
+        Iterator<String> iterator = files.iterator();
+        assertThat(iterator.next(), is("1673459"));
+        assertThat(iterator.next(), is("1674710"));
     }
 
     @Test
