@@ -118,7 +118,7 @@ public class SVNXmlLogReader implements LogReader {
 
             Commit commit = new Commit();
             commit.setRevision(getRevision((Element) commitNode));
-            commit.setAuthor(getAuthor(commitNode));
+            commit.setCommitter(getAuthor(commitNode));
             commit.setDate(getDate(commitNode));
             commit.setAffectedFiles(getAffectedFilesFromCommit(commitNode));
 

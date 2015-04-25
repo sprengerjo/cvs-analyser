@@ -63,7 +63,7 @@ public class SVNXmlLogReaderTest {
         Commit commit = commits.get(0);
 
         assertThat(commits.size(), is(2));
-        assertThat(commit.getAuthor(), is("ggregory"));
+        assertThat(commit.getCommitter(), is("ggregory"));
         assertThat(commit.getRevision(), is("1674710"));
         assertThat(commit.getDate().toString(DATE_TIME_FORMATTER), is("2015-04-20 00:25:55"));
         assertThat(commit.getAffectedFiles().size(), is(1));

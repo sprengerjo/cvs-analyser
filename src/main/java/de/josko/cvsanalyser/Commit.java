@@ -6,17 +6,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Commit {
-    private String author;
+    private String committer;
     private DateTime date;
     private Set<String> affectedFiles = new HashSet<>();
     private String revision;
 
-    public String getAuthor() {
-        return author;
+    public String getCommitter() {
+        return committer;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setCommitter(String committer) {
+        this.committer = committer;
     }
 
     public DateTime getDate() {
