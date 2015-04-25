@@ -7,6 +7,8 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import de.josko.cvsanalyser.reader.LogReader;
 import de.josko.cvsanalyser.reader.SVNXmlLogReader;
 
+import java.util.logging.Logger;
+
 public class CvsLogAnalyser {
     public static final String V_COMMITTER = "Committer";
     public static final String V_REVISION = "Revision";
@@ -15,7 +17,7 @@ public class CvsLogAnalyser {
     public static final String E_COMMITTED = "committed";
     public static final String E_CONTAINS = "contains";
     public static final String E_COMMITTED_ON = "committedOn";
-
+    private final static Logger LOG = Logger.getLogger(CvsLogAnalyser.class.getSimpleName());
     private static final String DB_DIR = "localhost/test";
 
     private OrientGraphFactory factory;
@@ -26,7 +28,7 @@ public class CvsLogAnalyser {
     }
 
     private void run() {
-        factory = new OrientGraphFactory("remote:" + DB_DIR, "admin", "admin");
+        factory = new OrientGraphFactory("remote:" + DB_DIR, "root", "root");
         oGraph = factory.getTx();
         oGraph.executeOutsideTx(iArgument -> {
             createVertexType(V_COMMITTER, "name");
@@ -38,22 +40,35 @@ public class CvsLogAnalyser {
             createEdgeType(E_COMMITTED_ON);
 
 
-            LogReader reader = new SVNXmlLogReader(this.getClass().getResourceAsStream("log-long.xml"));
+            LogReader reader = new SVNXmlLogReader(this.getClass().getResourceAsStream("log.xml"));
 
-            reader.getAuthors().forEach(author -> addVertex(V_COMMITTER, "name", author));
-            reader.getRevisions().forEach(revision -> addVertex(V_REVISION, "revision", revision));
-            reader.getDates().forEach(date -> addVertex(V_DATE, "date", date.toString()));
-            reader.getAffectedFiles().forEach(file -> addVertex(V_CLASS, "file", file));
+            reader.getAuthors().forEach(author -> {
+                addVertex(V_COMMITTER, "name", author);
+            });
+            reader.getRevisions().forEach(revision -> {
+                addVertex(V_REVISION, "revision", revision);
+            });
+            reader.getDates().forEach(date -> {
+                addVertex(V_DATE, "date", date.toString());
+            });
+            reader.getAffectedFiles().forEach(file -> {
+                addVertex(V_CLASS, "file", file);
+            });
 
             reader.getCommits().forEach(commit -> {
+                LOG.info("Processing Revision " + commit.getRevision());
                 Vertex committer = getVertex(V_COMMITTER, "name", commit.getCommitter());
                 Vertex revision = getVertex(V_REVISION, "revision", commit.getRevision());
                 Vertex date = getVertex(V_DATE, "date", commit.getDate().toString());
 
+                LOG.info(" -> Add Edge from " + commit.getCommitter() + " to " + commit.getRevision());
                 oGraph.addEdge("class:" + E_COMMITTED, committer, revision, E_COMMITTED);
+
+                LOG.info("  -> Add Edge from " + commit.getRevision() + " to " + commit.getDate().toString());
                 oGraph.addEdge("class:" + E_COMMITTED_ON, revision, date, E_COMMITTED_ON);
 
-                reader.getAffectedFiles().forEach(file -> {
+                commit.getAffectedFiles().forEach(file -> {
+                    LOG.info(" -> Add Edge from " + commit.getRevision() + " to " + file);
                     Vertex fileVertex = getVertex(V_CLASS, "file", file);
                     oGraph.addEdge("class:" + E_CONTAINS, revision, fileVertex, E_CONTAINS);
                 });
@@ -65,14 +80,15 @@ public class CvsLogAnalyser {
         factory.close();
     }
 
-    private void addVertex(String className, String key, String value) {
+    private void addVertex(String className, String key, Object value) {
         Vertex vertex = getVertex(className, key, value);
         if (vertex == null) {
+            LOG.info("Add vertex for " + className + " with: " + key + " = " + value);
             oGraph.addVertex("class:" + className).setProperty(key, value);
         }
     }
 
-    private Vertex getVertex(String className, String key, String value) {
+    private Vertex getVertex(String className, String key, Object value) {
         Iterable<Vertex> hits = oGraph.query().has(key, value).limit(1).vertices();
         if (hits != null && hits.iterator().hasNext()) {
             return hits.iterator().next();

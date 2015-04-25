@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class SVNXmlLogReader implements LogReader {
-    protected final static Logger LOG = Logger.getLogger(SVNXmlLogReader.class.getSimpleName());
+    private final static Logger LOG = Logger.getLogger(SVNXmlLogReader.class.getSimpleName());
 
     private Document doc;
     private DocumentBuilder builder;
@@ -67,7 +67,7 @@ public class SVNXmlLogReader implements LogReader {
 
     @Override
     public Set<String> getAffectedFiles() {
-        String xpath = "/log/logentry/paths/path[@kind='file']";
+        String xpath = "/log/logentry/paths/path";
         return getStringValueSet(xpath);
     }
 
@@ -83,7 +83,9 @@ public class SVNXmlLogReader implements LogReader {
 
         Set<String> result = new HashSet<>();
         for (int i = 0; i < nodeList.getLength(); i++) {
-            result.add(nodeList.item(i).getTextContent());
+            String content = nodeList.item(i).getTextContent();
+            content = content.replaceAll("\\s", "");
+            result.add(content);
         }
 
         return result;
@@ -152,10 +154,12 @@ public class SVNXmlLogReader implements LogReader {
     private Set<String> getAffectedFilesFromCommit(Node commitNode) {
         Set<String> affectedFiles = new HashSet<>();
 
-        NodeList affectedFilesNodes = selectNodes(commitNode, "paths/path[@kind='file']");
+        NodeList affectedFilesNodes = selectNodes(commitNode, "paths/path");
         for (int j = 0; j < affectedFilesNodes.getLength(); j++) {
             Node affectedFileNode = affectedFilesNodes.item(j);
-            affectedFiles.add(affectedFileNode.getTextContent());
+            String fileName = affectedFileNode.getTextContent();
+            fileName = fileName.replaceAll("\\s", "");
+            affectedFiles.add(fileName);
         }
 
         return affectedFiles;
