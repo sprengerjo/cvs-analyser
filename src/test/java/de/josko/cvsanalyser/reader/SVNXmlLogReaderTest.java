@@ -1,6 +1,5 @@
 package de.josko.cvsanalyser.reader;
 
-import de.josko.cvsanalyser.Commit;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

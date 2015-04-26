@@ -6,11 +6,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import de.josko.cvsanalyser.reader.LogReader;
 import de.josko.cvsanalyser.reader.SVNXmlLogReader;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class CvsLogAnalyser {

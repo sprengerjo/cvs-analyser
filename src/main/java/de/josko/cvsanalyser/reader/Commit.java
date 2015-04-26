@@ -1,4 +1,4 @@
-package de.josko.cvsanalyser;
+package de.josko.cvsanalyser.reader;
 
 import org.joda.time.DateTime;
 
