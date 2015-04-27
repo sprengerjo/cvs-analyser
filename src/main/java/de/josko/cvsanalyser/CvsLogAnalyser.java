@@ -1,8 +1,10 @@
 package de.josko.cvsanalyser;
 
 import de.josko.cvsanalyser.db.OrientDbWriter;
+import de.josko.cvsanalyser.reader.Commit;
 import de.josko.cvsanalyser.reader.LogReader;
 import de.josko.cvsanalyser.reader.SVNXmlLogReader;
+import org.joda.time.DateTime;
 import rx.Observable;
 
 
@@ -24,5 +26,24 @@ public class CvsLogAnalyser {
         reader.getDates().forEach(date -> writer.dates(date));
         reader.getAffectedFiles().forEach(file -> writer.files(file));
         reader.getCommits().forEach(commit -> writer.commits(commit));
+    }
+
+    public void runReactivly(LogReader reader, OrientDbWriter writer) {
+//FIXME: join all vertex observables into on, to make it faster
+        Observable<String> authors = Observable.from(reader.getAuthors());
+        authors.forEach(author -> writer.addVertex(writer.V_COMMITTER, author));
+
+        Observable<String> revisions = Observable.from(reader.getRevisions());
+        revisions.forEach(revision -> writer.addVertex(writer.V_REVISION, revision));
+
+        Observable<DateTime> dates = Observable.from(reader.getDates());
+        dates.forEach(date -> writer.addVertex(writer.V_DATE, date));
+
+        Observable<String> files = Observable.from(reader.getAffectedFiles());
+        files.forEach(file -> writer.addVertex(writer.V_CLASS, file));
+
+
+        Observable<Commit> commits = Observable.from(reader.getCommits());
+        commits.forEach(commit -> writer.commits(commit));
     }
 }

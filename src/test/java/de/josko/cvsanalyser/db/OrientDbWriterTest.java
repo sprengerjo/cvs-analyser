@@ -90,6 +90,16 @@ public class OrientDbWriterTest {
     }
 
     @Test
+    public void createlongReactivly() throws Exception {
+        long time = System.currentTimeMillis();
+        LogReader reader = new SVNXmlLogReader(CvsLogAnalyser.class.getResourceAsStream("log-long.xml"));
+
+        new CvsLogAnalyser().runReactivly(reader, writer);
+
+        System.out.println("time elapsed: "   + (System.currentTimeMillis() - time));
+    }
+
+    @Test
     public void committerMustBeCreated() throws Exception {
         writer.committers("anything");
         writer.getGraph().getVerticesOfClass(writer.V_COMMITTER).forEach(

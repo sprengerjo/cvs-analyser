@@ -23,10 +23,10 @@ public class OrientDbWriter {
     private OrientGraphFactory factory;
     private OrientGraph oGraph;
 
-    static final String V_COMMITTER = "Committer";
-    static final String V_REVISION = "Revision";
-    static final String V_DATE = "Date";
-    static final String V_CLASS = "Class";
+    public static final String V_COMMITTER = "Committer";
+    public static final String V_REVISION = "Revision";
+    public static final String V_DATE = "Date";
+    public static final String V_CLASS = "Class";
 
     static final String E_COMMITTED = "committed";
     static final String E_CONTAINS = "contains";
@@ -75,7 +75,7 @@ public class OrientDbWriter {
         oGraph = factory.getTx();
     }
 
-    private void addVertex(String className, Object value) {
+    public void addVertex(String className, Object value) {
         Vertex vertex = getVertex(className, value);
         if (vertex == null) {
             LOG.info("Add vertex for " + className + " with: " + className + " = " + value);
