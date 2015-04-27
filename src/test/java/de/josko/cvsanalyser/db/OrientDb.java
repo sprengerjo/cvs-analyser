@@ -107,16 +107,4 @@ public class OrientDb {
         assertThat(committers, not(emptyIterable()));
     }
 
-    @Ignore
-    @Test
-    public void testName() throws Exception {
-        // for (Vertex v : (Iterable<Vertex>) oGraph
-        // .command(
-        // new OCommandSQL(
-        // "select expand( out('bough') ) from Committer"))
-        // .execute()) {
-        // System.out.println("- Bought: " + v);
-        // }
-    }
-
 }
