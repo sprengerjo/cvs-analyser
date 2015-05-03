@@ -16,6 +16,21 @@
         <msg>Javadoc 8 fix.</msg>
     </logentry>
     <logentry
+            revision="1674710">
+        <author>ggregory</author>
+        <date>2015-04-20T00:25:55.200305Z</date>
+        <paths>
+            <path
+                    action="M"
+                    prop-mods="false"
+                    text-mods="true"
+                    kind="file">
+                /commons/proper/io/trunk/src/main/java/org/apache/commons/io/output/UnixLineEndingInputStreamTest.java
+            </path>
+        </paths>
+        <msg>Javadoc 8 fix.</msg>
+    </logentry>
+    <logentry
             revision="1673459">
         <author>krosenvold</author>
         <date>2015-04-14T16:10:27.613604Z</date>

@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class SVNXmlLogReader implements LogReader {
     private final static Logger LOG = Logger.getLogger(SVNXmlLogReader.class.getSimpleName());
@@ -47,34 +46,6 @@ public class SVNXmlLogReader implements LogReader {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public Set<String> getAuthors() {
-        String xpath = "/log/logentry/author";
-        return getStringValueSet(xpath);
-    }
-
-
-    @Override
-    public Set<DateTime> getDates() {
-        String xpath = "/log/logentry/date";
-        Set<String> dateStrings = getStringValueSet(xpath);
-        Set<DateTime> dates = dateStrings.stream().map(dateString -> parseDate(dateString)).collect(Collectors.toSet());
-        return dates;
-    }
-
-    @Override
-    public Set<String> getAffectedFiles() {
-        String xpath = "/log/logentry/paths/path";
-        return getStringValueSet(xpath);
-    }
-
-    @Override
-    public Set<String> getRevisions() {
-        String xpath = "/log/logentry/@revision";
-        Set<String> commit = getStringValueSet(xpath);
-        return commit;
     }
 
     private Set<String> getStringValueSet(String xpath) {
@@ -110,7 +81,7 @@ public class SVNXmlLogReader implements LogReader {
 
     @Override
     public List<Commit> getCommits() {
-        ArrayList<Commit> commits = new ArrayList<Commit>();
+        ArrayList<Commit> commits = new ArrayList<>();
 
         String xpath = "/log/logentry";
         NodeList commitNodes = selectNodes(xpath);

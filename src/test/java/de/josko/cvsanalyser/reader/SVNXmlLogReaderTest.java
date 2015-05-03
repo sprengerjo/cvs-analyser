@@ -1,14 +1,11 @@
 package de.josko.cvsanalyser.reader;
 
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -22,38 +19,6 @@ public class SVNXmlLogReaderTest {
     @Before
     public void setUp() throws Exception {
         reader = new SVNXmlLogReader(this.getClass().getResourceAsStream("log.xml"));
-    }
-
-    @Test
-    public void authorsSetSizeIs7() throws Exception {
-        Set<String> authors = reader.getAuthors();
-        assertThat(authors.size(), is(2));
-    }
-
-    @Test
-    public void getAffectedFilesReturnsFileEntriesOnly() throws Exception {
-        Set<String> files = reader.getAffectedFiles();
-        assertThat(files.size(), is(2));
-    }
-
-    @Test
-    public void getRevisions() throws Exception {
-        Set<String> files = reader.getRevisions();
-        assertThat(files.size(), is(2));
-
-        Iterator<String> iterator = files.iterator();
-        assertThat(iterator.next(), is("1673459"));
-        assertThat(iterator.next(), is("1674710"));
-    }
-
-    @Test
-    public void getAllRevisionDates() throws Exception {
-        Set<DateTime> dates = reader.getDates();
-        assertThat(dates.size(), is(2));
-
-        Iterator<DateTime> iterator = dates.iterator();
-        assertThat(iterator.next().toString(DATE_TIME_FORMATTER), is("2015-04-14 16:10:27"));
-        assertThat(iterator.next().toString(DATE_TIME_FORMATTER), is("2015-04-20 00:25:55"));
     }
 
     @Test

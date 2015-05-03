@@ -4,6 +4,7 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
+import org.apache.log4j.Logger;
 import org.junit.*;
 
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.logging.Logger;
 
 import static java.nio.file.Files.*;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 
 public class OrientDb {
 
-    protected final static Logger LOG = Logger.getLogger("test");
+    protected final static Logger LOG = Logger.getLogger(OrientDb.class);
 
     private final static String DB_DIR = "./target/db/test";
 
@@ -72,25 +72,22 @@ public class OrientDb {
         }
     }
 
-    private Iterable<Vertex> createData() {
-        Iterable<Vertex> committers = oGraph.executeOutsideTx(iArgument -> {
-            oGraph.createVertexType("Committer");
-            oGraph.createVertexType("Class");
-            oGraph.createEdgeType("CommittedTo");
+    private void createData() {
+        factory.getNoTx().createVertexType("Committer");
+        factory.getNoTx().createVertexType("Class");
+        factory.getNoTx().createEdgeType("CommittedTo");
 
-            Vertex vClass = oGraph.addVertex("class:Class");
+        Vertex vClass = oGraph.addVertex("class:Class");
 
-            Vertex vPerson1 = oGraph.addVertex("class:Committer");
-            Vertex vPerson2 = oGraph.addVertex("class:Committer");
-            vPerson1.setProperty("firstName", "Jonas");
-            vPerson2.setProperty("firstName", "Stephan");
+        Vertex vPerson1 = oGraph.addVertex("class:Committer");
+        Vertex vPerson2 = oGraph.addVertex("class:Committer");
+        vPerson1.setProperty("firstName", "Jonas");
+        vPerson2.setProperty("firstName", "Stephan");
 
-            oGraph.addEdge("class:CommittedTo", vPerson1, vClass, "committedTo");
-            oGraph.addEdge("class:CommittedTo", vPerson2, vClass, "committedTo");
-
-            return oGraph.getVerticesOfClass("Committer");
-        });
-        return committers;
+        // Need to set any property to edge as orientdb will treat edge as "lightweight" otherwise and can
+        // not be queried by using class CommittedTo
+        oGraph.addEdge("class:CommittedTo", vPerson1, vClass, "CommittedTo").setProperty("dummy", "");
+        oGraph.addEdge("class:CommittedTo", vPerson2, vClass, "CommittedTo").setProperty("dummy", "");
     }
 
     @Test
